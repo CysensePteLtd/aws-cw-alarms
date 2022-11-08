@@ -3,7 +3,7 @@ const project = new awscdk.AwsCdkConstructLibrary({
   author: 'cysense',
   authorAddress: 'https://www.cysense.io',
   authorOrganization: true,
-  cdkVersion: '2.25.0',
+  cdkVersion: '2.8.0',
   defaultReleaseBranch: 'main',
   name: 'cysense/aws-cw-alarms',
   description: 'AWS CDK Construct to setup cloud watch alarms within your account using cloudtrail with the recommended best practices.',
