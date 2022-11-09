@@ -1,7 +1,7 @@
 import { aws_logs } from 'aws-cdk-lib';
 
 
-export interface IAlarms {
+interface IAlarms {
   [key: string]: {
     name: string;
     filter: aws_logs.JsonPattern;

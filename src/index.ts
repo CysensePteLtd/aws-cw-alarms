@@ -1,7 +1,14 @@
 import { aws_cloudtrail, aws_cloudwatch, aws_cloudwatch_actions, aws_iam, aws_kms, aws_logs, aws_s3, aws_sns, RemovalPolicy } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Alarms, IAlarms } from './alarms';
+import { Alarms } from './alarms';
 
+
+export interface IAlarms {
+  [key: string]: {
+    name: string;
+    filter: aws_logs.JsonPattern;
+  };
+}
 export interface AccountLogsProps {
 
   /**
