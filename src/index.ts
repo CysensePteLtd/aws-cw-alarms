@@ -1,4 +1,4 @@
-import { aws_cloudtrail, aws_cloudwatch, aws_cloudwatch_actions, aws_iam, aws_kms, aws_logs, aws_s3, aws_sns, RemovalPolicy } from 'aws-cdk-lib';
+import { aws_cloudtrail, aws_cloudwatch, aws_cloudwatch_actions, aws_iam, aws_kms, aws_logs, aws_s3, aws_sns, RemovalPolicy, Stack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Alarms } from './alarms';
 
@@ -51,19 +51,25 @@ export interface AccountLogsProps {
   * An SNS topic to send alerts to when an alarm is triggered.
   */
   readonly destinationTopic?: aws_sns.Topic;
+
+  /**
+  * An SNS topic to send alerts to when an alarm is triggered.
+  */
+  readonly alarmbucketName?: string;
 }
 export class AccountLogs extends Construct {
 
   /**
    * Defines an account logs resource. The account logs resource setups cloudtrail, forwards logs to S3 and cloudwatch and creates alerts all aligned with best practices.
    */
-  constructor(scope: Construct, id: string, props: AccountLogsProps = {}) {
+  constructor(scope: Stack, id: string, props: AccountLogsProps = {}) {
     super(scope, id);
 
     const retention = props.retention ?? aws_logs.RetentionDays.TEN_YEARS;
     const s3Datalogs = props.enableS3DataLogs ?? true;
     const lamndaDatalogs = props.enableLambdaDataLogs ?? true;
     const alarms = props.alarms ?? Alarms;
+    const bucketName = props.alarmbucketName;
 
     const encryptionKey = props.customEncryptionKey ?? new aws_kms.Key(this, 'Key', {
       enableKeyRotation: true,
@@ -71,6 +77,7 @@ export class AccountLogs extends Construct {
     });
 
     const bucket = new aws_s3.Bucket(this, 'Bucket', {
+      bucketName,
       encryption: aws_s3.BucketEncryption.KMS,
       blockPublicAccess: aws_s3.BlockPublicAccess.BLOCK_ALL,
       encryptionKey: encryptionKey,
